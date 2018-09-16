@@ -18,7 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class LocalChronicler implements Chronicler {
 
-    private static final TypeReference<Map<Integer, DownloadRecord>> TYPE_REFERENCE = new TypeReference<>() { };
+    private static final TypeReference<Map<String, DownloadRecord>> TYPE_REFERENCE = new TypeReference<>() { };
 
     @NonNull
     private final String outputDir;
@@ -28,14 +28,14 @@ public class LocalChronicler implements Chronicler {
     private final ObjectMapper mapper;
 
     @Override
-    public Map<Integer, DownloadRecord> getRecords() {
+    public Map<String, DownloadRecord> getRecords() {
         File file = this.getFile();
         if (!file.exists()) {
             return new HashMap<>();
         }
 
         try {
-            Map<Integer, DownloadRecord> records = this.mapper.readValue(file, TYPE_REFERENCE);
+            Map<String, DownloadRecord> records = this.mapper.readValue(file, TYPE_REFERENCE);
             return records;
         } catch (IOException e) {
             String message = String.format("Unable to read record file at [ %s ].", file.getAbsolutePath());
@@ -45,7 +45,7 @@ public class LocalChronicler implements Chronicler {
     }
 
     @Override
-    public void saveRecords(final Map<Integer, DownloadRecord> records) {
+    public void saveRecords(final Map<String, DownloadRecord> records) {
         File file = this.getFile();
 
         try {

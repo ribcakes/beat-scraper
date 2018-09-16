@@ -5,7 +5,7 @@ import org.ribcakes.beatScraper.persist.model.DownloadRecord;
 import java.util.Map;
 
 public interface Chronicler {
-    Map<Integer, DownloadRecord> getRecords();
+    Map<String, DownloadRecord> getRecords();
 
-    void saveRecords(Map<Integer, DownloadRecord> records);
+    void saveRecords(Map<String, DownloadRecord> records);
 }
