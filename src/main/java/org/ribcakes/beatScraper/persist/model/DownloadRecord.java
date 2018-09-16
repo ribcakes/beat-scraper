@@ -9,9 +9,7 @@ import org.ribcakes.beatScraper.details.model.SongDetail;
 @Builder
 public class DownloadRecord {
     @NonNull
-    private int songNum;
-    @NonNull
     private DownloadStatus status;
     @NonNull
-    private SongDetail details;
+    private SongDetail detail;
 }
