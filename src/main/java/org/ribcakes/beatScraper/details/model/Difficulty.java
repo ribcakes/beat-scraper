@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Getter(onMethod = @__(@JsonValue))
 public enum Difficulty {
     EASY("Easy"),
+    MEDIUM("Medium"),
     NORMAL("Normal"),
     HARD("Hard"),
     EXPERT("Expert"),
