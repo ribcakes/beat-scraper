@@ -2,6 +2,7 @@ package org.ribcakes.beatScraper.details;
 
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.ribcakes.beatScraper.details.model.DetailPage;
 import org.ribcakes.beatScraper.details.model.SongDetail;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class DetailIterator implements Iterator<SongDetail> {
 
     @NonNull
@@ -79,6 +81,7 @@ public class DetailIterator implements Iterator<SongDetail> {
             this.nextPage.addAll(filteredDetails);
         }
 
+        log.info("Sleeping for 1 second before moving to next page.");
         Thread.sleep(1000);
     }
 }
