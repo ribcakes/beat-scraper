@@ -75,6 +75,8 @@ public class ShellCommands {
     }
 
     private Optional<DownloadRecord> downloadSong(final String outputDir, final SongDetail detail) {
+        log.info("==================================================");
+        log.info("Beginning Download of [ {} ].", detail.getName());
         String key = detail.getKey();
         String downloadUrl = detail.getDownloadUrl();
         String outputFolder = String.format("%s/%s", outputDir, key);
@@ -89,6 +91,7 @@ public class ShellCommands {
                                                                                     .detail(detail)
                                                                                     .build())
                                                          .findFirst();
+        log.info("Completed Download of [ {} ].", detail.getName());
 
         return record;
     }
