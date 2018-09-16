@@ -2,6 +2,7 @@ package org.ribcakes.beatScraper;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ribcakes.beatScraper.compression.Unzipper;
 import org.ribcakes.beatScraper.details.DetailIterator;
 import org.ribcakes.beatScraper.details.DetailService;
@@ -15,12 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+@Slf4j
 @ShellComponent
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ShellCommands {
@@ -69,6 +72,8 @@ public class ShellCommands {
         Optional<DownloadRecord> record = this.downloader.download(downloadUrl, outputFolder)
                                                          .stream()
                                                          .peek(file -> this.unzipper.unzip(file, outputFolder))
+                                                         .peek(file -> log.info("Deleting file [ {} ].", file.getAbsolutePath()))
+                                                         .peek(File::delete)
                                                          .map(file -> DownloadRecord.builder()
                                                                                     .status(DownloadStatus.DOWNLOADED)
                                                                                     .detail(detail)
