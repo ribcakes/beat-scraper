@@ -2,7 +2,9 @@ package org.ribcakes.beatScraper;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.ribcakes.beatScraper.details.DetailScraper;
+import org.ribcakes.beatScraper.details.DetailIterator;
+import org.ribcakes.beatScraper.details.DetailService;
+import org.ribcakes.beatScraper.details.model.CreatedDetail;
 import org.ribcakes.beatScraper.details.model.SongDetail;
 import org.ribcakes.beatScraper.download.SongDownloader;
 import org.ribcakes.beatScraper.persist.Chronicler;
@@ -12,47 +14,60 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
-import java.io.File;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @ShellComponent
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ShellCommands {
-    private static final int DOWNLOAD_OFFSET = 524;
 
     @NonNull
     private final Chronicler chronicler;
     @NonNull
-    private final DetailScraper detailScraper;
+    private final DetailService detailService;
     @NonNull
     private final SongDownloader downloader;
 
     @ShellMethod("scrape beatsaver")
-    public void run(final int stop) throws Exception {
-        Map<Integer, DownloadRecord> records = this.chronicler.getRecords();
-        Integer start = records.keySet()
-                               .stream()
-                               .max(Integer::compareTo)
-                               .map(integer -> integer + 1)
-                               .orElse(DOWNLOAD_OFFSET);
+    public void run() throws Exception {
+        Map<String, DownloadRecord> records = this.chronicler.getRecords();
+        LocalDateTime newestDate = records.values()
+                                          .stream()
+                                          .max(Comparator.comparing(record -> record.getDetail()
+                                                                                    .getCreatedAt()
+                                                                                    .getDate()))
+                                          .map(DownloadRecord::getDetail)
+                                          .map(SongDetail::getCreatedAt)
+                                          .map(CreatedDetail::getDate)
+                                          .orElse(null);
 
-        for (int index = start; index <= stop; index++) {
-            int downloadNum = index - DOWNLOAD_OFFSET;
-            String fileName = String.format("%d-%d", index, downloadNum);
-            Optional<File> maybeFile = this.downloader.download(index, downloadNum, fileName);
+        Iterator<SongDetail> iterator = new DetailIterator(this.detailService, newestDate);
+        Spliterator<SongDetail> spliterator = Spliterators.spliteratorUnknownSize(iterator, 0);
 
-            DownloadStatus status = DownloadStatus.NOT_FOUND;
-            if (maybeFile.isPresent()) {
-                status = DownloadStatus.DOWNLOADED;
-            }
-            DownloadRecord record = DownloadRecord.builder()
-                                                  .songNum(index)
-                                                  .status(status)
-                                                  .details(SongDetail.builder().build())
-                                                  .build();
-            records.put(index, record);
-        }
+        Map<String, DownloadRecord> newRecords
+                = StreamSupport.stream(spliterator, false)
+                               .map(this::downloadSong)
+                               .filter(Optional::isPresent)
+                               .map(Optional::get)
+                               .collect(Collectors.toMap(record -> record.getDetail().getKey(), Function.identity()));
+        records.putAll(newRecords);
+
         this.chronicler.saveRecords(records);
+    }
+
+    private Optional<DownloadRecord> downloadSong(final SongDetail detail) {
+        String key = detail.getKey();
+        String downloadUrl = detail.getDownloadUrl();
+
+        Optional<DownloadRecord> record = this.downloader.download(downloadUrl, key)
+                                                         .map(file -> DownloadRecord.builder()
+                                                                                    .status(DownloadStatus.DOWNLOADED)
+                                                                                    .detail(detail)
+                                                                                    .build());
+
+        return record;
     }
 }
