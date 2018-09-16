@@ -7,7 +7,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -25,20 +24,20 @@ public enum Difficulty {
 
     private static final Map<String, Difficulty> DISPLAY_NAME_MAP
             = Arrays.stream(Difficulty.values())
-                    .collect(Collectors.collectingAndThen(
-                            Collectors.toMap(Difficulty::getDisplayName, Function.identity()),
-                            Collections::unmodifiableMap));
+                    .collect(Collectors.toUnmodifiableMap(difficulty -> difficulty.getDisplayName()
+                                                                                  .toLowerCase(),
+                                                          Function.identity()));
 
     @NonNull
     private final String displayName;
 
-    public static Optional<Difficulty> fromString(final String name) {
-        Difficulty difficulty = DISPLAY_NAME_MAP.get(name);
+    public static Optional<Difficulty> fromString(@NonNull final String name) {
+        Difficulty difficulty = DISPLAY_NAME_MAP.get(name.toLowerCase());
         return Optional.ofNullable(difficulty);
     }
 
     @JsonCreator
-    public static Difficulty fromStringUnsafe(final String name) {
+    public static Difficulty fromStringUnsafe(@NonNull final String name) {
         Difficulty difficulty = fromString(name).orElseThrow(() -> {
             String message = String.format("Unknown Difficulty [ %s ].", name);
             throw new IllegalArgumentException(message);
