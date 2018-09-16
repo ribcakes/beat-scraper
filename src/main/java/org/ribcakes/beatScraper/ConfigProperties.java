@@ -12,8 +12,8 @@ public class ConfigProperties {
     private String outputDir;
     @Value("${recordFile}")
     private String recordFile;
-    @Value("${browseUrl}")
-    private String browseUrl;
+    @Value("${apiUrl}")
+    private String apiUrl;
     @Value("${downloadUrl}")
     private String downloadUrl;
 
@@ -28,8 +28,8 @@ public class ConfigProperties {
     }
 
     @Bean
-    public String browseUrl() {
-        return this.browseUrl;
+    public String apiUrl() {
+        return this.apiUrl;
     }
 
     @Bean
