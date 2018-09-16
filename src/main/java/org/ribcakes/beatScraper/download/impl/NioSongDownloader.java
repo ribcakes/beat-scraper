@@ -2,6 +2,7 @@ package org.ribcakes.beatScraper.download.impl;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.ribcakes.beatScraper.download.SongDownloader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -25,8 +25,6 @@ import java.util.Optional;
 public class NioSongDownloader implements SongDownloader {
 
     @NonNull
-    private final String downloadUrl;
-    @NonNull
     private final String outputDir;
 
     @PostConstruct
@@ -35,8 +33,8 @@ public class NioSongDownloader implements SongDownloader {
     }
 
     @Override
-    public Optional<File> download(final int songId, final int downloadId, final String fileName) throws MalformedURLException {
-        String downloadUrl = String.format(this.downloadUrl, songId, downloadId);
+    @SneakyThrows
+    public Optional<File> download(final String downloadUrl, final String fileName) {
         URL url = new URL(downloadUrl);
 
         String downloadLocation = String.format("%s/%s.zip", this.outputDir, fileName);
