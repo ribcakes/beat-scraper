@@ -1,26 +1,60 @@
 package org.ribcakes.beatScraper.compression.impl;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.ribcakes.beatScraper.compression.Unzipper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileOutputStream ;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ApacheUnzipper implements Unzipper {
+
+    @NonNull
+    private final List<Charset> charsets;
 
     @Override
     public void unzip(final File file, final String destination) {
         log.info("Unzipping file [ {} ].", file.getAbsolutePath());
-        try (ZipFile zipFile = new ZipFile(file)) {
+
+        for (Charset charset : this.charsets) {
+            try {
+                this.unzip(file, destination, charset);
+            } catch (IllegalArgumentException e) {
+                boolean isMalformedException = e.getMessage()
+                                                .toLowerCase()
+                                                .contains("malformed");
+                if (isMalformedException) {
+                    String message = String.format("Encountered Malformed exception with charset [ %s ].", charset);
+                    log.warn(message);
+                    log.debug(message, e);
+                    continue;
+                }
+                throw e;
+            }
+            return;
+        }
+        String message = String.format("Unable to unzip [ %s ] with the given charsets [ %s ]", file, this.charsets);
+        throw new RuntimeException(message);
+    }
+
+    private void unzip(final File file, final String destination, final Charset charset) {
+        log.info("Unzipping file [ {} ] with charset [ {} ].", file.getAbsolutePath(), charset);
+
+        try (ZipFile zipFile = new ZipFile(file, charset)) {
             zipFile.stream()
                    .forEach(entry -> this.processEntry(zipFile, destination, entry));
         } catch (IOException e) {

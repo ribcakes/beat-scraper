@@ -6,14 +6,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Configuration
 public class Config {
     @Value("${recordFile}")
-    private String recordFile;
+    private String       recordFile;
     @Value("${apiUrl}")
-    private String apiUrl;
+    private String       apiUrl;
     @Value("${downloadUrl}")
-    private String downloadUrl;
+    private String       downloadUrl;
+    @Value("#{'${charsets}'.split(',')}")
+    private List<String> charsets;
 
     @Bean
     public String recordFile() {
@@ -28,6 +34,13 @@ public class Config {
     @Bean
     public String downloadUrl() {
         return this.downloadUrl;
+    }
+
+    @Bean
+    public List<Charset> charsets() {
+        return this.charsets.stream()
+                            .map(Charset::forName)
+                            .collect(Collectors.toList());
     }
 
     @Bean
