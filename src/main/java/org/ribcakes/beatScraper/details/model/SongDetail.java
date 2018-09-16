@@ -31,7 +31,7 @@ public class SongDetail {
     private String hashMd5;
     private String hashSha1;
 
-    private Map<Difficulty, DifficultyDetail> difficulties;
+    private Map<String, DifficultyDetail> difficulties;
 
     private CreatedDetail createdAt;
 }
