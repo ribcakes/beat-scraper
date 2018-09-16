@@ -39,6 +39,16 @@ public class ShellCommands {
 
     @ShellMethod("scrape beatsaver")
     public void scrape(final String outputDir) throws Exception {
+        File outputFolder = new File(outputDir);
+        if (!outputFolder.exists()) {
+            String message = String.format("User provided output dir [ %s ] does not exist!", outputFolder.getAbsolutePath());
+            throw new RuntimeException(message);
+        }
+        if (!outputFolder.isDirectory()) {
+            String message = String.format("User provided output dir [ %s ] is not a directory!", outputFolder.getAbsolutePath());
+            throw new RuntimeException(message);
+        }
+
         Map<String, DownloadRecord> records = this.chronicler.getRecords(outputDir);
         LocalDateTime newestDate = records.values()
                                           .stream()
