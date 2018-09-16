@@ -2,6 +2,7 @@ package org.ribcakes.beatScraper;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.ribcakes.beatScraper.compression.Unzipper;
 import org.ribcakes.beatScraper.details.DetailIterator;
 import org.ribcakes.beatScraper.details.DetailService;
 import org.ribcakes.beatScraper.details.model.CreatedDetail;
@@ -30,6 +31,8 @@ public class ShellCommands {
     private final DetailService detailService;
     @NonNull
     private final SongDownloader downloader;
+    @NonNull
+    private final Unzipper unzipper;
 
     @ShellMethod("scrape beatsaver")
     public void scrape(final String outputDir) throws Exception {
@@ -64,10 +67,13 @@ public class ShellCommands {
         String outputFolder = String.format("%s/%s", outputDir, key);
 
         Optional<DownloadRecord> record = this.downloader.download(downloadUrl, outputFolder)
+                                                         .stream()
+                                                         .peek(file -> this.unzipper.unzip(file, outputFolder))
                                                          .map(file -> DownloadRecord.builder()
                                                                                     .status(DownloadStatus.DOWNLOADED)
                                                                                     .detail(detail)
-                                                                                    .build());
+                                                                                    .build())
+                                                         .findFirst();
 
         return record;
     }
