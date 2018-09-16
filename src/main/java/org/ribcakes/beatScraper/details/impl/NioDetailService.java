@@ -30,6 +30,8 @@ public class NioDetailService implements DetailService {
 
         try {
             URL url = new URL(pageUrl);
+            log.info("Retrieving details at url [ {} ].", url);
+
             DetailPage detailPage = this.mapper.readValue(url, DetailPage.class);
 
             return Optional.ofNullable(detailPage);
