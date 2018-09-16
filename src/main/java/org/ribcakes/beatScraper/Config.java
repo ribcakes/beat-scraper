@@ -1,13 +1,13 @@
 package org.ribcakes.beatScraper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties
-public class ConfigProperties {
+public class Config {
     @Value("${recordFile}")
     private String recordFile;
     @Value("${apiUrl}")
@@ -28,5 +28,13 @@ public class ConfigProperties {
     @Bean
     public String downloadUrl() {
         return this.downloadUrl;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        return mapper;
     }
 }
