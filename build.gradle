@@ -35,6 +35,8 @@ dependencies {
     compile('com.fasterxml.jackson.core:jackson-databind:2.9.6')
     compile('com.fasterxml.jackson.core:jackson-annotations:2.9.6')
     compile('org.jsoup:jsoup:1.11.3')
+    compile('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.6')
+    compile('org.apache.commons:commons-collections4:4.2')
 
     runtime('org.springframework.boot:spring-boot-devtools')
 
