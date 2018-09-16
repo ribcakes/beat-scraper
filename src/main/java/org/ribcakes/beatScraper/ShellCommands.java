@@ -74,7 +74,9 @@ public class ShellCommands {
                                .filter(Optional::isPresent)
                                .map(Optional::get)
                                .collect(Collectors.toMap(record -> record.getDetail()
-                                                                         .getKey(), Function.identity()));
+                                                                         .getKey(),
+                                                         Function.identity(),
+                                                         (record1, record2) -> record1));
         records.putAll(newRecords);
 
         this.chronicler.saveRecords(outputDir, records);
