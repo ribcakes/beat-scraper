@@ -3,22 +3,33 @@ package org.ribcakes.beatScraper.details.model;
 import lombok.Builder;
 import lombok.Value;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
 
 @Value
 @Builder
 public class SongDetail {
+    private long id;
+    private String key;
+    private String name;
+    private String description;
     private String uploader;
-    private LocalDateTime uploadedAt;
-    private String title;
+    private long uploaderId;
+    private String songName;
+    private String songSubName;
+    private String authorName;
+    private long bpm;
+    private Map<Difficulty, DifficultyDetail> difficulties;
+    private long downloadCount;
+    private long playedCount;
+    private long upVotes;
+    private long upVotesTotal;
+    private long downVotes;
+    private long downVotesTotal;
     private String version;
-    private String author;
-    private List<Difficulty> difficulties;
-    private long downloads;
-    private long finished;
-    private long thumbsUp;
-    private long thumbsDown;
-    private long overallScore;
-    private boolean lightingEvents;
+    private CreatedDetail createdAt;
+    private String linkUrl;
+    private String downloadUrl;
+    private String coverUrl;
+    private String hashMd5;
+    private String hashSha1;
 }

@@ -1,5 +1,7 @@
 package org.ribcakes.beatScraper.details.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +13,11 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Getter
 @RequiredArgsConstructor
+@Getter(onMethod = @__(@JsonValue))
 public enum Difficulty {
     EASY("Easy"),
-    MEDIUM("Medium"),
+    NORMAL("Normal"),
     HARD("Hard"),
     EXPERT("Expert"),
     EXPERT_PLUS("ExpertPlus");
@@ -29,8 +31,18 @@ public enum Difficulty {
     @NonNull
     private final String displayName;
 
-    public Optional<Difficulty> fromString(final String name) {
+    public static Optional<Difficulty> fromString(final String name) {
         Difficulty difficulty = DISPLAY_NAME_MAP.get(name);
         return Optional.ofNullable(difficulty);
+    }
+
+    @JsonCreator
+    public static Difficulty fromStringUnsafe(final String name) {
+        Difficulty difficulty = fromString(name).orElseThrow(() -> {
+            String message = String.format("Unknown Difficulty [ %s ].", name);
+            throw new IllegalArgumentException(message);
+        });
+
+        return difficulty;
     }
 }
