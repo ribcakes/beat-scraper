@@ -37,7 +37,7 @@ public class ShellCommands {
     @NonNull
     private final Unzipper unzipper;
 
-    @ShellMethod("scrape beatsaver")
+    @ShellMethod("Scrape the BeatSaver website.")
     public void scrape(final String outputDir) throws Exception {
         File outputFolder = new File(outputDir);
         if (!outputFolder.exists()) {
