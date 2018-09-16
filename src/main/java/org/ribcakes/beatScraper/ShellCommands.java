@@ -32,8 +32,8 @@ public class ShellCommands {
     private final SongDownloader downloader;
 
     @ShellMethod("scrape beatsaver")
-    public void run() throws Exception {
-        Map<String, DownloadRecord> records = this.chronicler.getRecords();
+    public void scrape(final String outputDir) throws Exception {
+        Map<String, DownloadRecord> records = this.chronicler.getRecords(outputDir);
         LocalDateTime newestDate = records.values()
                                           .stream()
                                           .max(Comparator.comparing(record -> record.getDetail()
@@ -49,20 +49,21 @@ public class ShellCommands {
 
         Map<String, DownloadRecord> newRecords
                 = StreamSupport.stream(spliterator, false)
-                               .map(this::downloadSong)
+                               .map(detail -> this.downloadSong(outputDir, detail))
                                .filter(Optional::isPresent)
                                .map(Optional::get)
                                .collect(Collectors.toMap(record -> record.getDetail().getKey(), Function.identity()));
         records.putAll(newRecords);
 
-        this.chronicler.saveRecords(records);
+        this.chronicler.saveRecords(outputDir, records);
     }
 
-    private Optional<DownloadRecord> downloadSong(final SongDetail detail) {
+    private Optional<DownloadRecord> downloadSong(final String outputDir, final SongDetail detail) {
         String key = detail.getKey();
         String downloadUrl = detail.getDownloadUrl();
+        String outputFolder = String.format("%s/%s", outputDir, key);
 
-        Optional<DownloadRecord> record = this.downloader.download(downloadUrl, key)
+        Optional<DownloadRecord> record = this.downloader.download(downloadUrl, outputFolder)
                                                          .map(file -> DownloadRecord.builder()
                                                                                     .status(DownloadStatus.DOWNLOADED)
                                                                                     .detail(detail)

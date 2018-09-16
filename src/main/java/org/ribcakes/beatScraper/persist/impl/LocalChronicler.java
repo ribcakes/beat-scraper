@@ -21,15 +21,13 @@ public class LocalChronicler implements Chronicler {
     private static final TypeReference<Map<String, DownloadRecord>> TYPE_REFERENCE = new TypeReference<>() { };
 
     @NonNull
-    private final String outputDir;
-    @NonNull
     private final String recordFile;
     @NonNull
     private final ObjectMapper mapper;
 
     @Override
-    public Map<String, DownloadRecord> getRecords() {
-        File file = this.getFile();
+    public Map<String, DownloadRecord> getRecords(final String outputDir) {
+        File file = this.getFile(outputDir);
         if (!file.exists()) {
             return new HashMap<>();
         }
@@ -45,8 +43,8 @@ public class LocalChronicler implements Chronicler {
     }
 
     @Override
-    public void saveRecords(final Map<String, DownloadRecord> records) {
-        File file = this.getFile();
+    public void saveRecords(final String outputDir, final Map<String, DownloadRecord> records) {
+        File file = this.getFile(outputDir);
 
         try {
             this.mapper.writeValue(file, records);
@@ -57,8 +55,8 @@ public class LocalChronicler implements Chronicler {
         }
     }
 
-    private File getFile() {
-        String fileName = String.format("%s/%s.json", this.outputDir, this.recordFile);
+    private File getFile(final String outputDir) {
+        String fileName = String.format("%s/%s.json", outputDir, this.recordFile);
         File file = new File(fileName);
 
         return file;

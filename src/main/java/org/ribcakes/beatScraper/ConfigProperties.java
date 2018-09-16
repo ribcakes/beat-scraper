@@ -8,19 +8,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties
 public class ConfigProperties {
-    @Value("${outputDir}")
-    private String outputDir;
     @Value("${recordFile}")
     private String recordFile;
     @Value("${apiUrl}")
     private String apiUrl;
     @Value("${downloadUrl}")
     private String downloadUrl;
-
-    @Bean
-    public String outputDir() {
-        return this.outputDir;
-    }
 
     @Bean
     public String recordFile() {
