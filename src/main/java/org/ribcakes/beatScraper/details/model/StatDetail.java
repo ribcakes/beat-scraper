@@ -8,9 +8,9 @@ import java.util.Map;
 @Value
 @Builder
 public class StatDetail {
-    private long time;
+    private long              time;
     private Map<String, Long> slashstat;
-    private long events;
-    private long notes;
-    private long obstacles;
+    private long              events;
+    private long              notes;
+    private long              obstacles;
 }

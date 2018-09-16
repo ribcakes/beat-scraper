@@ -11,5 +11,5 @@ public class DownloadRecord {
     @NonNull
     private DownloadStatus status;
     @NonNull
-    private SongDetail detail;
+    private SongDetail     detail;
 }

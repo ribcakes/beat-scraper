@@ -5,7 +5,11 @@ import org.apache.commons.io.IOUtils;
 import org.ribcakes.beatScraper.compression.Unzipper;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -17,7 +21,8 @@ public class ApacheUnzipper implements Unzipper {
     public void unzip(final File file, final String destination) {
         log.info("Unzipping file [ {} ].", file.getAbsolutePath());
         try (ZipFile zipFile = new ZipFile(file)) {
-            zipFile.stream().forEach(entry -> this.processEntry(zipFile, destination, entry));
+            zipFile.stream()
+                   .forEach(entry -> this.processEntry(zipFile, destination, entry));
         } catch (IOException e) {
             String message = String.format("Unable to open zipped file [ %s ].", file.getAbsolutePath());
             throw new RuntimeException(message, e);
@@ -29,7 +34,8 @@ public class ApacheUnzipper implements Unzipper {
         if (entry.isDirectory()) {
             destinationFile.mkdirs();
         } else {
-            destinationFile.getParentFile().mkdirs();
+            destinationFile.getParentFile()
+                           .mkdirs();
             try (InputStream inputStream = zipFile.getInputStream(entry);
                  OutputStream outputStream = new FileOutputStream(destinationFile)) {
                 IOUtils.copy(inputStream, outputStream);

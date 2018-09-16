@@ -9,7 +9,15 @@ import org.ribcakes.beatScraper.details.model.SongDetail;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -21,7 +29,7 @@ public class DetailIterator implements Iterator<SongDetail> {
     private final LocalDateTime newestDate;
 
     private final Queue<SongDetail> detailCache = new ArrayDeque<>();
-    private final List<SongDetail> nextPage = new ArrayList<>();
+    private final List<SongDetail>  nextPage    = new ArrayList<>();
 
     private int offset = 0;
 
@@ -67,12 +75,14 @@ public class DetailIterator implements Iterator<SongDetail> {
         List<SongDetail> filteredDetails
                 = details.stream()
                          .filter(detail -> {
-                             LocalDateTime createdAt = detail.getCreatedAt().getDate();
+                             LocalDateTime createdAt = detail.getCreatedAt()
+                                                             .getDate();
                              Boolean shouldDownload = Optional.ofNullable(this.newestDate)
                                                               .map(newest -> newest.isBefore(createdAt))
                                                               .orElse(Boolean.TRUE);
                              return shouldDownload;
-                         }).collect(Collectors.toList());
+                         })
+                         .collect(Collectors.toList());
         this.offset += filteredDetails.size();
 
         if (details.size() != filteredDetails.size()) {

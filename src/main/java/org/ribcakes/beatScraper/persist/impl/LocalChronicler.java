@@ -21,7 +21,7 @@ public class LocalChronicler implements Chronicler {
     private static final TypeReference<Map<String, DownloadRecord>> TYPE_REFERENCE = new TypeReference<>() { };
 
     @NonNull
-    private final String recordFile;
+    private final String       recordFile;
     @NonNull
     private final ObjectMapper mapper;
 

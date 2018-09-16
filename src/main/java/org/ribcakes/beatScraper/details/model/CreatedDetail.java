@@ -13,6 +13,6 @@ public class CreatedDetail {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
     private LocalDateTime date;
     @JsonProperty("timezone_type")
-    private long timezoneType;
-    private String timezone;
+    private long          timezoneType;
+    private String        timezone;
 }

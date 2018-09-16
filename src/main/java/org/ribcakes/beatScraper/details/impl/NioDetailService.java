@@ -20,7 +20,7 @@ import java.util.Optional;
 public class NioDetailService implements DetailService {
 
     @NonNull
-    private final String apiUrl;
+    private final String       apiUrl;
     @NonNull
     private final ObjectMapper mapper;
 

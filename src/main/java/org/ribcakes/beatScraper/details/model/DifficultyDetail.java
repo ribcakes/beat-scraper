@@ -7,8 +7,8 @@ import lombok.Value;
 @Builder
 public class DifficultyDetail {
     private Difficulty difficulty;
-    private long rank;
-    private String audioPath;
-    private String jsonPath;
+    private long       rank;
+    private String     audioPath;
+    private String     jsonPath;
     private StatDetail stats;
 }

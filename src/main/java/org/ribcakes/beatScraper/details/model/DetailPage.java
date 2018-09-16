@@ -9,5 +9,5 @@ import java.util.List;
 @Builder
 public class DetailPage {
     private List<SongDetail> songs;
-    private long total;
+    private long             total;
 }

@@ -18,7 +18,12 @@ import org.springframework.shell.standard.ShellMethod;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -29,13 +34,13 @@ import java.util.stream.StreamSupport;
 public class ShellCommands {
 
     @NonNull
-    private final Chronicler chronicler;
+    private final Chronicler     chronicler;
     @NonNull
-    private final DetailService detailService;
+    private final DetailService  detailService;
     @NonNull
     private final SongDownloader downloader;
     @NonNull
-    private final Unzipper unzipper;
+    private final Unzipper       unzipper;
 
     @ShellMethod("Scrape the BeatSaver website.")
     public void scrape(final String outputDir) throws Exception {
@@ -68,7 +73,8 @@ public class ShellCommands {
                                .map(detail -> this.downloadSong(outputDir, detail))
                                .filter(Optional::isPresent)
                                .map(Optional::get)
-                               .collect(Collectors.toMap(record -> record.getDetail().getKey(), Function.identity()));
+                               .collect(Collectors.toMap(record -> record.getDetail()
+                                                                         .getKey(), Function.identity()));
         records.putAll(newRecords);
 
         this.chronicler.saveRecords(outputDir, records);
