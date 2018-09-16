@@ -45,7 +45,7 @@ public class NioSongDownloader implements SongDownloader {
             throw new RuntimeException(message);
         } catch (IOException e) {
             if (FileNotFoundException.class.isInstance(e)) {
-                log.info("Unable to find song at [ {} ] or open file for writing at [ {} ].", url, outputFile);
+                log.warn("Unable to find song at [ {} ] or open file for writing at [ {} ].", url, outputFile);
                 return Optional.empty();
             }
 
