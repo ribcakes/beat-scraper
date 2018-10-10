@@ -7,6 +7,7 @@ import org.ribcakes.beatScraper.scrape.Scraper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.shell.standard.ShellOption;
 
 @Slf4j
 @ShellComponent
@@ -17,7 +18,8 @@ public class ShellCommands {
     private final Scraper scraper;
 
     @ShellMethod("Scrape the BeatSaver website.")
-    public void scrape(final String outputDir) throws Exception {
+    public void scrape(@ShellOption(defaultValue = "C:/Program Files (x86)/Steam/steamapps/common/Beat Saber/CustomSongs") final String outputDir)
+            throws Exception {
         log.info("Using output directory [ {} ].", outputDir);
         this.scraper.scrape(outputDir);
     }
