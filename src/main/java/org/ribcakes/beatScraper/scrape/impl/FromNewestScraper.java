@@ -67,6 +67,13 @@ public class FromNewestScraper implements Scraper {
                                                       .collect(Collectors.toSet());
         records.addAll(newRecords);
 
+        Set<DownloadRecord> erroredRecords = records.stream()
+                                                    .filter(record -> DownloadStatus.ERROR.equals(record.getStatus()))
+                                                    .map(DownloadRecord::getDetail)
+                                                    .map(detail -> this.downloadSong(outputDir, detail))
+                                                    .collect(Collectors.toSet());
+        records.addAll(erroredRecords);
+
         this.chronicler.saveRecords(outputDir, records);
     }
 
