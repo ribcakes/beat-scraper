@@ -29,7 +29,6 @@ repositories {
 
 
 dependencies {
-    compile('org.springframework.retry:spring-retry')
     compile('org.springframework.shell:spring-shell-starter:2.0.0.RELEASE')
     compile('com.fasterxml.jackson.core:jackson-core:2.9.6')
     compile('com.fasterxml.jackson.core:jackson-databind:2.9.6')
