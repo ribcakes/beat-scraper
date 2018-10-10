@@ -58,6 +58,8 @@ public class FromNewestScraper implements Scraper {
                                           .map(CreatedDetail::getDate)
                                           .max(LocalDateTime::compareTo)
                                           .orElse(null);
+        log.info("==================================================");
+        log.info("Downloading songs songs uploaded after [ {} ]", newestDate);
 
         Iterator<SongDetail> iterator = new DetailIterator(this.detailService, newestDate);
         Spliterator<SongDetail> spliterator = Spliterators.spliteratorUnknownSize(iterator, 0);
@@ -67,6 +69,8 @@ public class FromNewestScraper implements Scraper {
                                                       .collect(Collectors.toSet());
         records.addAll(newRecords);
 
+        log.info("==================================================");
+        log.info("Retrying download of previously failed songs.");
         Set<DownloadRecord> erroredRecords = records.stream()
                                                     .filter(record -> DownloadStatus.ERROR.equals(record.getStatus()))
                                                     .map(DownloadRecord::getDetail)
@@ -78,7 +82,7 @@ public class FromNewestScraper implements Scraper {
     }
 
     private DownloadRecord downloadSong(final String outputDir, final SongDetail detail) {
-        log.info("==================================================");
+        log.debug("==================================================");
         log.info("Beginning Download of [ {} ].", detail.getName());
         String key = detail.getKey();
         String downloadUrl = detail.getDownloadUrl();

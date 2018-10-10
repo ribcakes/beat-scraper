@@ -31,12 +31,12 @@ public class NioSongDownloader implements SongDownloader {
         try (ReadableByteChannel readableByteChannel = Channels.newChannel(url.openStream());
              FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
              FileChannel fileChannel = fileOutputStream.getChannel()) {
-            log.info("Downloading song from url [ {} ] to file [ {} ].", url, outputFile);
+            log.debug("Downloading song from url [ {} ] to file [ {} ].", url, outputFile);
 
             fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
             File file = new File(outputFile);
             if (file.exists()) {
-                log.info("Downloaded song from url [ {} ] to file [ {} ].", url, file.getAbsolutePath());
+                log.debug("Downloaded song from url [ {} ] to file [ {} ].", url, file.getAbsolutePath());
 
                 return Optional.of(file);
             }

@@ -28,7 +28,7 @@ public class ApacheUnzipper implements Unzipper {
 
     @Override
     public void unzip(final File file, final String destination) {
-        log.info("Unzipping file [ {} ].", file.getAbsolutePath());
+        log.debug("Unzipping file [ {} ].", file.getAbsolutePath());
 
         for (Charset charset : this.charsets) {
             try {
@@ -52,7 +52,7 @@ public class ApacheUnzipper implements Unzipper {
     }
 
     private void unzip(final File file, final String destination, final Charset charset) {
-        log.info("Unzipping file [ {} ] with charset [ {} ].", file.getAbsolutePath(), charset);
+        log.debug("Unzipping file [ {} ] with charset [ {} ].", file.getAbsolutePath(), charset);
 
         try (ZipFile zipFile = new ZipFile(file, charset)) {
             zipFile.stream()

@@ -30,14 +30,14 @@ public class NioDetailService implements DetailService {
 
         try {
             URL url = new URL(pageUrl);
-            log.info("Retrieving details at url [ {} ].", url);
+            log.debug("Retrieving details at url [ {} ].", url);
 
             DetailPage detailPage = this.mapper.readValue(url, DetailPage.class);
 
             return Optional.ofNullable(detailPage);
         } catch (IOException e) {
             if (FileNotFoundException.class.isInstance(e)) {
-                log.info("Unable to get page for url [ {} ].", pageUrl);
+                log.warn("Unable to get page for url [ {} ].", pageUrl);
                 return Optional.empty();
             }
 
