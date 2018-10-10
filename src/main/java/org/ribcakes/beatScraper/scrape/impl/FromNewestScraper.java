@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
@@ -55,12 +54,10 @@ public class FromNewestScraper implements Scraper {
 
         Set<DownloadRecord> records = this.chronicler.getRecords(outputDir);
         LocalDateTime newestDate = records.stream()
-                                          .max(Comparator.comparing(record -> record.getDetail()
-                                                                                    .getCreatedAt()
-                                                                                    .getDate()))
                                           .map(DownloadRecord::getDetail)
                                           .map(SongDetail::getCreatedAt)
                                           .map(CreatedDetail::getDate)
+                                          .max(LocalDateTime::compareTo)
                                           .orElse(null);
 
         Iterator<SongDetail> iterator = new DetailIterator(this.detailService, newestDate);
