@@ -45,12 +45,14 @@ public class NioSongDownloader implements SongDownloader {
             throw new RuntimeException(message);
         } catch (IOException e) {
             if (FileNotFoundException.class.isInstance(e)) {
-                log.warn("Unable to find song at [ {} ] or open file for writing at [ {} ].", url, outputFile);
-                return Optional.empty();
+                String message = String.format("Unable to find song at [ %s ] or open file for writing at [ %s ].", url, outputFile);
+                log.warn(message, e);
+            } else {
+                String message = String.format("Unable to downloaded url [ %s ].", url);
+                log.error(message, e);
             }
 
-            String message = String.format("Unable to downloaded url [ %s ].", url);
-            throw new RuntimeException(message, e);
+            return Optional.empty();
         }
     }
 }

@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Iterator;
-import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -71,23 +70,27 @@ public class FromNewestScraper implements Scraper {
         this.chronicler.saveRecords(outputDir, records);
     }
 
-    private Optional<DownloadRecord> downloadSong(final String outputDir, final SongDetail detail) {
+    private DownloadRecord downloadSong(final String outputDir, final SongDetail detail) {
         log.info("==================================================");
         log.info("Beginning Download of [ {} ].", detail.getName());
         String key = detail.getKey();
         String downloadUrl = detail.getDownloadUrl();
         String outputFolder = String.format("%s/%s", outputDir, key);
 
-        Optional<DownloadRecord> record = this.downloader.download(downloadUrl, outputFolder)
-                                                         .stream()
-                                                         .peek(file -> this.unzipper.unzip(file, outputFolder))
-                                                         .peek(file -> log.debug("Deleting file [ {} ].", file.getAbsolutePath()))
-                                                         .peek(File::delete)
-                                                         .map(file -> DownloadRecord.builder()
-                                                                                    .status(DownloadStatus.DOWNLOADED)
-                                                                                    .detail(detail)
-                                                                                    .build())
-                                                         .findFirst();
+        DownloadRecord record = this.downloader.download(downloadUrl, outputFolder)
+                                               .stream()
+                                               .peek(file -> this.unzipper.unzip(file, outputFolder))
+                                               .peek(file -> log.debug("Deleting file [ {} ].", file.getAbsolutePath()))
+                                               .peek(File::delete)
+                                               .map(file -> DownloadRecord.builder()
+                                                                          .status(DownloadStatus.DOWNLOADED)
+                                                                          .detail(detail)
+                                                                          .build())
+                                               .findFirst()
+                                               .orElseGet(() -> DownloadRecord.builder()
+                                                                              .status(DownloadStatus.ERROR)
+                                                                              .detail(detail)
+                                                                              .build());
         log.info("Completed Download of [ {} ].", detail.getName());
 
         return record;
