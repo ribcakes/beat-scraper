@@ -78,7 +78,23 @@ public class FromNewestScraper implements Scraper {
                                                     .collect(Collectors.toSet());
         records.addAll(erroredRecords);
 
+        log.info("==================================================");
+        log.info("Saving new download records...");
         this.chronicler.saveRecords(outputDir, records);
+
+        long newErrors = newRecords.stream()
+                                   .filter(record -> DownloadStatus.ERROR.equals(record.getStatus()))
+                                   .count();
+        long newlySucceeded = erroredRecords.stream()
+                                            .filter(record -> DownloadStatus.DOWNLOADED.equals(record.getStatus()))
+                                            .count();
+
+        log.info("==================================================");
+        log.info("Download complete.");
+        log.info("Encountered [ {} ] new errors, downloaded [ {} ] new songs & [ {} ] previously failed songs.",
+                 newErrors,
+                 newRecords.size() - newErrors,
+                 newlySucceeded);
     }
 
     private DownloadRecord downloadSong(final String outputDir, final SongDetail detail) {
