@@ -20,11 +20,10 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -54,9 +53,8 @@ public class FromNewestScraper implements Scraper {
             throw new RuntimeException(message);
         }
 
-        Map<String, DownloadRecord> records = this.chronicler.getRecords(outputDir);
-        LocalDateTime newestDate = records.values()
-                                          .stream()
+        Set<DownloadRecord> records = this.chronicler.getRecords(outputDir);
+        LocalDateTime newestDate = records.stream()
                                           .max(Comparator.comparing(record -> record.getDetail()
                                                                                     .getCreatedAt()
                                                                                     .getDate()))
@@ -68,16 +66,10 @@ public class FromNewestScraper implements Scraper {
         Iterator<SongDetail> iterator = new DetailIterator(this.detailService, newestDate);
         Spliterator<SongDetail> spliterator = Spliterators.spliteratorUnknownSize(iterator, 0);
 
-        Map<String, DownloadRecord> newRecords
-                = StreamSupport.stream(spliterator, false)
-                               .map(detail -> this.downloadSong(outputDir, detail))
-                               .filter(Optional::isPresent)
-                               .map(Optional::get)
-                               .collect(Collectors.toMap(record -> record.getDetail()
-                                                                         .getKey(),
-                                                         Function.identity(),
-                                                         (record1, record2) -> record1));
-        records.putAll(newRecords);
+        Set<DownloadRecord> newRecords = StreamSupport.stream(spliterator, false)
+                                                      .map(detail -> this.downloadSong(outputDir, detail))
+                                                      .collect(Collectors.toSet());
+        records.addAll(newRecords);
 
         this.chronicler.saveRecords(outputDir, records);
     }

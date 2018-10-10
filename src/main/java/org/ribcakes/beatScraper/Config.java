@@ -12,19 +12,12 @@ import java.util.stream.Collectors;
 
 @Configuration
 public class Config {
-    @Value("${recordFile}")
-    private String       recordFile;
     @Value("${apiUrl}")
     private String       apiUrl;
     @Value("${downloadUrl}")
     private String       downloadUrl;
     @Value("#{'${charsets}'.split(',')}")
     private List<String> charsets;
-
-    @Bean
-    public String recordFile() {
-        return this.recordFile;
-    }
 
     @Bean
     public String apiUrl() {
