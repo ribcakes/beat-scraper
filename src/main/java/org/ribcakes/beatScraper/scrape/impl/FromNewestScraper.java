@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -105,15 +106,11 @@ public class FromNewestScraper implements Scraper {
         String outputFolder = String.format("%s/%s", outputDir, key);
 
         DownloadRecord record = this.downloader.download(downloadUrl, outputFolder)
-                                               .stream()
-                                               .peek(file -> this.unzipper.unzip(file, outputFolder))
-                                               .peek(file -> log.debug("Deleting file [ {} ].", file.getAbsolutePath()))
-                                               .peek(File::delete)
+                                               .flatMap(file -> unzipAndDelete(file, outputFolder))
                                                .map(file -> DownloadRecord.builder()
                                                                           .status(DownloadStatus.DOWNLOADED)
                                                                           .detail(detail)
                                                                           .build())
-                                               .findFirst()
                                                .orElseGet(() -> DownloadRecord.builder()
                                                                               .status(DownloadStatus.ERROR)
                                                                               .detail(detail)
@@ -121,5 +118,19 @@ public class FromNewestScraper implements Scraper {
         log.info("Completed Download of [ {} ].", detail.getName());
 
         return record;
+    }
+
+    private Optional<File> unzipAndDelete(final File file, final String outputFolder) {
+        try {
+            this.unzipper.unzip(file, outputFolder);
+            log.debug("Deleting file [ {} ].", file.getAbsolutePath());
+            file.delete();
+
+            return Optional.of(file);
+        } catch (Exception e) {
+            log.error("Unable to unzip [ {} ]", file.getAbsolutePath());
+            log.debug("Unable to unzip.", e);
+            return Optional.empty();
+        }
     }
 }
