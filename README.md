@@ -10,7 +10,7 @@
 - Install JDK 10.
   - you can find the Oracle version here:  http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html
 - Download the latest release jar from [here](https://github.com/ribcakes/beat-scraper/releases).
-- Run the release jar with `java -jar `
+- Run the release jar with `java -jar ` if you download the jar file, or just run the exe if you chose that option.
   - e.g. `java -jar beat-scraper-1.1.jar`
 
 ## Usage
