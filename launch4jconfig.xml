@@ -2,8 +2,8 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>console</headerType>
-  <jar>C:\Users\Ribcakes\IdeaProjects\beat-scraper\build\libs\beat-scraper-1.1.1.jar</jar>
-  <outfile>C:\Users\Ribcakes\IdeaProjects\beat-scraper\build\libs\beat-scraper-1.1.1.exe</outfile>
+  <jar>C:\Users\Ribcakes\IdeaProjects\beat-scraper\build\libs\beat-scraper-1.2.0.jar</jar>
+  <outfile>C:\Users\Ribcakes\IdeaProjects\beat-scraper\build\libs\beat-scraper-1.2.0.exe</outfile>
   <errTitle>Beat Scraper</errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -28,12 +28,12 @@
     <runtimeBits>64/32</runtimeBits>
   </jre>
   <versionInfo>
-    <fileVersion>1.1.1.0</fileVersion>
-    <txtFileVersion>1.1.1.0</txtFileVersion>
-    <fileDescription>BeatScraper 1.1.1</fileDescription>
+    <fileVersion>1.2.0.0</fileVersion>
+    <txtFileVersion>1.2.0.0</txtFileVersion>
+    <fileDescription>BeatScraper 1.2.0</fileDescription>
     <copyright>Copyright (C) 2018, Ribcakes</copyright>
-    <productVersion>1.1.1.0</productVersion>
-    <txtProductVersion>1.1.1.0</txtProductVersion>
+    <productVersion>1.2.0.0</productVersion>
+    <txtProductVersion>1.2.0.0</txtProductVersion>
     <productName>Beat Scraper</productName>
     <companyName></companyName>
     <internalName>Beat Scraper</internalName>

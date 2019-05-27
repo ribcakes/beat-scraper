@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.2] - 2019-05-27
+- Update `SongDetail` and `DifficultyDetail` models to be more flexible with new field additions
+
 ## [1.1] - 2018-10-10
 ### Added
 - Failed downloads are now retried on each scrape
